@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.MessageMapper">
+	<resultMap id="BaseResultMap" type="com.ssm.pojo.Message">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="userid" property="userid" jdbcType="INTEGER" />
+		<result column="parentid" property="parentid" jdbcType="INTEGER" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="text" property="text" jdbcType="VARCHAR" />
+		<result column="parentname" property="parentname" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+
+		<association property="user" javaType="com.ssm.pojo.User">
+			<id column="id" property="id" jdbcType="INTEGER" />
+			<result column="username" property="username" jdbcType="VARCHAR" />
+			<result column="password" property="password" jdbcType="VARCHAR" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
+			<result column="url" property="url" jdbcType="VARCHAR" />
+			<result column="level" jdbcType="VARCHAR" property="level" />
+			<result column="status" jdbcType="VARCHAR" property="status" />
+			<result column="registertime" jdbcType="TIMESTAMP" property="registertime" />
+		</association>
+
+
+
+
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, userid, parentid, ip, text, time,parentname
+	</sql>
+	<select id="selectMessageEcharts" resultType="java.util.HashMap">
+		SELECT
+		DATE_FORMAT(time, '%Y-%m-%d') as time,
+		count(time) AS num
+		FROM
+		message
+		where
+		DATE_FORMAT(time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+  		and parentid=0
+		GROUP BY
+		DATE_FORMAT(time, '%Y-%m-%d')
+
+	</select>
+	
+	<select id="selectMessageEchartsMonthOfYear" resultType="java.util.HashMap">
+	SELECT
+		DATE_FORMAT(time, '%Y-%m') as time,
+		count(time) AS num
+		FROM
+		message
+		where parentid=0
+		GROUP BY
+		DATE_FORMAT(time, '%Y-%m')
+	
+	</select>
+
+	<select id="selectMessage" resultMap="BaseResultMap">
+
+		select * from message,user
+		where message.userid=user.id
+	</select>
+
+	<select id="selectMessageCount" resultType="java.lang.Integer">
+		select count(*) from
+		message where parentid=0
+	</select>
+	<select id="selectNewId" resultType="java.lang.Integer">
+		select id from message order
+		by id desc limit 1;
+	</select>
+
+
+	<select id="conditionalQueryMessage" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		select * from message,user where message.userid=user.id and 1=1
+		<if test="datemin!=null and datemin!=''">
+			 <![CDATA[  AND time >= #{datemin} ]]>
+		</if>
+		<if test="datemax!=null and datemax!=''">
+				 <![CDATA[  AND time <= #{datemax} ]]>
+		</if>
+
+	</select>
+
+	<delete id="deleteMessageById" parameterType="java.lang.Integer">
+		delete from message
+		where id=#{id} or parentid=#{parentid}
+	</delete>
+
+
+<select id="selectMessageToDay" resultType="java.lang.Integer">
+		SELECT count(*) FROM
+		message WHERE TO_DAYS(time) = TO_DAYS(NOW()) and parentid=0
+	</select>
+
+	<select id="selectMessageYesterDay" resultType="java.lang.Integer">
+		SELECT count(*) FROM message WHERE TO_DAYS(NOW()) - TO_DAYS(time) = 1
+		and parentid=0
+	</select>
+
+	<select id="selectMessageWeek" resultType="java.lang.Integer">
+		SELECT count(*) FROM message where
+		YEARWEEK(date_format(time,'%Y-%m-%d')) = YEARWEEK(now())
+   and parentid=0
+	</select>
+	
+	<select id="selectMessageMonth" resultType="java.lang.Integer">
+	SELECT count(*) FROM message WHERE DATE_FORMAT(time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+	and parentid=0
+	</select>
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from message
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		message
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ssm.pojo.Message">
+		insert into message (id,
+		userid, parentid,
+		ip, text, time)
+		values (#{id,jdbcType=INTEGER},
+		#{userid,jdbcType=INTEGER},
+		#{parentid,jdbcType=INTEGER},
+		#{ip,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR},
+		#{time,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ssm.pojo.Message">
+		insert into message
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="parentid != null">
+				parentid,
+			</if>
+			<if test="ip != null">
+				ip,
+			</if>
+			<if test="text != null">
+				text,
+			</if>
+			<if test="parentname != null">
+				parentname,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="parentid != null">
+				#{parentid,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="text != null">
+				#{text,jdbcType=VARCHAR},
+			</if>
+			<if test="parentname != null">
+				#{parentname,jdbcType=VARCHAR},
+			</if>
+
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ssm.pojo.Message">
+		update message
+		<set>
+			<if test="userid != null">
+				userid = #{userid,jdbcType=INTEGER},
+			</if>
+			<if test="parentid != null">
+				parentid = #{parentid,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="text != null">
+				text = #{text,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ssm.pojo.Message">
+		update message
+		set
+		userid = #{userid,jdbcType=INTEGER},
+		parentid =
+		#{parentid,jdbcType=INTEGER},
+		ip = #{ip,jdbcType=VARCHAR},
+		text =
+		#{text,jdbcType=VARCHAR},
+		time = #{time,jdbcType=TIMESTAMP}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+</mapper>

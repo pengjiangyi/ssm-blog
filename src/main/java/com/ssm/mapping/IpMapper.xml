@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.IpMapper">
+	<resultMap id="BaseResultMap" type="com.ssm.pojo.Ip">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, ip, time, status
+	</sql>
+
+
+
+	<select id="selectIp" resultType="java.util.HashMap">
+		SELECT
+		DATE_FORMAT(time, '%Y-%m-%d') as time,
+		count(time) AS num
+		FROM
+		ip
+		where
+		DATE_FORMAT(time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+		GROUP BY
+		DATE_FORMAT(time, '%Y-%m-%d')
+	</select>
+	
+	
+	<select id="selectIpMonthOfYear" resultType="java.util.HashMap">
+		SELECT
+		DATE_FORMAT(time, '%Y-%m') as time,
+		count(time) AS num
+		FROM
+		ip
+		GROUP BY
+		DATE_FORMAT(time, '%Y-%m')
+	</select>
+
+	
+	
+	<select id="selectIpTotal" resultType="java.lang.Integer">
+		SELECT count(*) FROM
+		ip 
+	</select>
+	
+	<select id="selectIpToDay" resultType="java.lang.Integer">
+		SELECT count(*) FROM
+		ip WHERE TO_DAYS(time) = TO_DAYS(NOW())
+	</select>
+
+	<select id="selectIpYesterDay" resultType="java.lang.Integer">
+		SELECT count(*) FROM ip WHERE TO_DAYS(NOW()) - TO_DAYS(time) = 1
+	
+	</select>
+
+	<select id="selectIpWeek" resultType="java.lang.Integer">
+		SELECT count(*) FROM ip where
+		YEARWEEK(date_format(time,'%Y-%m-%d')) = YEARWEEK(now())
+  
+	</select>
+	
+	<select id="selectIpMonth" resultType="java.lang.Integer">
+	SELECT count(*) FROM ip WHERE DATE_FORMAT(time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+
+	</select>
+
+
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from ip
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from ip
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ssm.pojo.Ip">
+		insert into ip (id, ip, time,
+		status)
+		values (#{id,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR},
+		#{time,jdbcType=TIMESTAMP},
+		#{status,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ssm.pojo.Ip">
+		insert into ip
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="ip != null">
+				ip,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ssm.pojo.Ip">
+		update ip
+		<set>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ssm.pojo.Ip">
+		update ip
+		set ip =
+		#{ip,jdbcType=VARCHAR},
+		time = #{time,jdbcType=TIMESTAMP},
+		status =
+		#{status,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.LinksMapper">
+	<resultMap id="BaseResultMap" type="com.ssm.pojo.Links">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="category" property="category" jdbcType="VARCHAR" />
+		<result column="webName" property="webname" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="telphone" property="telphone" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, category, webName, url, telphone, content, status, time
+	</sql>
+
+	<select id="selectLink" resultMap="BaseResultMap">
+		select * from links
+	</select>
+	
+	<select id="selectLinkStatus" resultMap="BaseResultMap">
+		select * from links  where status='启用'
+	</select>
+
+	<select id="conditionalQuery" resultMap="BaseResultMap"
+		parameterType="java.util.HashMap">
+		select * from links where 1=1
+
+		<if test="datemin!=null and datemin!=''">
+			 <![CDATA[  AND time >= #{datemin} ]]>
+		</if>
+		<if test="datemax!=null and datemax!=''">
+				 <![CDATA[  AND time <= #{datemax} ]]>
+		</if>
+		<if test="webname!=null and webname!=''">
+			and webname = #{webname}
+		</if>
+
+	</select>
+
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from links
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from links
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ssm.pojo.Links">
+		insert into links (id,
+		category, webName,
+		url, telphone, content,
+		status, time)
+		values
+		(#{id,jdbcType=INTEGER}, #{category,jdbcType=VARCHAR},
+		#{webname,jdbcType=VARCHAR},
+		#{url,jdbcType=VARCHAR},
+		#{telphone,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ssm.pojo.Links">
+		insert into links
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="category != null">
+				category,
+			</if>
+			<if test="webname != null">
+				webName,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="telphone != null">
+				telphone,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="category != null">
+				#{category,jdbcType=VARCHAR},
+			</if>
+			<if test="webname != null">
+				#{webname,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="telphone != null">
+				#{telphone,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ssm.pojo.Links">
+		update links
+		<set>
+			<if test="category != null">
+				category = #{category,jdbcType=VARCHAR},
+			</if>
+			<if test="webname != null">
+				webName = #{webname,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="telphone != null">
+				telphone = #{telphone,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ssm.pojo.Links">
+		update links
+		set
+		category = #{category,jdbcType=VARCHAR},
+		webName =
+		#{webname,jdbcType=VARCHAR},
+		url = #{url,jdbcType=VARCHAR},
+		telphone =
+		#{telphone,jdbcType=VARCHAR},
+		content = #{content,jdbcType=VARCHAR},
+		status = #{status,jdbcType=VARCHAR},
+		time = #{time,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

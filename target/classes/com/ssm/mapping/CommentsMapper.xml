@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssm.dao.CommentsMapper">
+	<resultMap id="BaseResultMap" type="com.ssm.pojo.Comments">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="articleid" property="articleid" jdbcType="INTEGER" />
+		<result column="userid" property="userid" jdbcType="INTEGER" />
+		<result column="parentid" property="parentid" jdbcType="INTEGER" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="text" property="text" jdbcType="VARCHAR" />
+		<result column="parentname" property="parentname" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+		<association property="user" javaType="com.ssm.pojo.User">
+			<id column="uid" property="id" jdbcType="INTEGER" />
+			<result column="username" property="username" jdbcType="VARCHAR" />
+			<result column="password" property="password" jdbcType="VARCHAR" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
+			<result column="url" property="url" jdbcType="VARCHAR" />
+			<result column="level" jdbcType="VARCHAR" property="level" />
+			<result column="status" jdbcType="VARCHAR" property="status" />
+			<result column="registertime" jdbcType="TIMESTAMP" property="registertime" />
+		</association>
+
+
+
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, articleid, userid, parentid, ip, text, time,parentname
+	</sql>
+
+	<select id="selectCommentsNew" resultMap="BaseResultMap">
+		select c.id,
+		c.articleid,c.text, c.time,u.url,u.username from comments
+		c,user u
+		where c.userid=u.id order
+		by c.time desc limit 5
+	</select>
+
+	<select id="selectCommentsCount" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		select count(*) from
+		comments where
+		articleid=#{articleid} and parentid=0
+	</select>
+
+
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from comments,user where comments.userid=user.id
+	</select>
+	
+	<select id="selectComments" resultType="java.lang.Integer">
+	select count(*) from comments 
+	</select>
+
+	<select id="conditionalQueryComments" parameterType="java.util.HashMap"
+		resultMap="BaseResultMap">
+		select * from comments,user where comments.userid=user.id and 1=1
+
+		<if test="datemin!=null and datemin!=''">
+			 <![CDATA[  AND time >= #{datemin} ]]>
+		</if>
+		<if test="datemax!=null and datemax!=''">
+				 <![CDATA[  AND time <= #{datemax} ]]>
+		</if>
+		<if test="articleid!=null and articleid!=''">
+			and articleid = #{articleid}
+		</if>
+
+	</select>
+
+
+
+	<select id="selectCommentsByArticleId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select * from comments,user where
+		comments.userid=user.id and comments.articleid=#{articleid}
+	</select>
+
+	<select id="selectCommentsIDNew" resultType="java.lang.Integer">
+		select id from comments order by id desc limit 1
+
+	</select>
+
+	<delete id="deleteArticleComments" parameterType="java.lang.Integer">
+		delete from comments where articleid=#{id}
+	</delete>
+
+
+	<delete id="deleteCommentsAndChild" parameterType="java.lang.Integer">
+		delete from comments where id=#{id} or parentid=#{parentid}
+	</delete>
+
+
+	<select id="selectCommentsEcharts" resultType="java.util.HashMap">
+		SELECT
+		DATE_FORMAT(time, '%Y-%m-%d') as time,
+		count(time) AS num
+		FROM
+		comments
+		where
+		DATE_FORMAT(time, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+  		and parentid=0
+		GROUP BY
+		DATE_FORMAT(time, '%Y-%m-%d')
+
+	</select>
+	
+	<select id="selectCommentsEchartsMonthOfYear" resultType="java.util.HashMap">
+	SELECT
+		DATE_FORMAT(time, '%Y-%m') as time,
+		count(time) AS num
+		FROM
+		comments
+		where parentid=0
+		GROUP BY
+		DATE_FORMAT(time, '%Y-%m')
+	
+	</select>
+	
+	<select id="selectCommentsTotal" resultType="java.lang.Integer">
+		SELECT count(*) FROM
+		comments where parentid=0
+	</select>
+	
+	<select id="selectCommentsToDay" resultType="java.lang.Integer">
+		SELECT count(*) FROM
+		comments WHERE TO_DAYS(time) = TO_DAYS(NOW()) and parentid=0
+	</select>
+
+	<select id="selectCommentsYesterDay" resultType="java.lang.Integer">
+		SELECT count(*) FROM comments WHERE TO_DAYS(NOW()) - TO_DAYS(time) = 1
+		and parentid=0
+	</select>
+
+	<select id="selectCommentsWeek" resultType="java.lang.Integer">
+		SELECT count(*) FROM comments where
+		YEARWEEK(date_format(time,'%Y-%m-%d')) = YEARWEEK(now())
+   and parentid=0
+	</select>
+	
+	<select id="selectCommentsMonth" resultType="java.lang.Integer">
+	SELECT count(*) FROM comments WHERE DATE_FORMAT(time, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
+	and parentid=0
+	</select>
+	
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from comments
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		comments
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.ssm.pojo.Comments">
+		insert into comments (id,
+		articleid, userid,
+		parentid, ip, text,
+		time)
+		values
+		(#{id,jdbcType=INTEGER}, #{articleid,jdbcType=INTEGER},
+		#{userid,jdbcType=INTEGER},
+		#{parentid,jdbcType=INTEGER},
+		#{ip,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR},
+		#{time,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ssm.pojo.Comments">
+		insert into comments
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="articleid != null">
+				articleid,
+			</if>
+			<if test="userid != null">
+				userid,
+			</if>
+			<if test="parentid != null">
+				parentid,
+			</if>
+			<if test="ip != null">
+				ip,
+			</if>
+			<if test="text != null">
+				text,
+			</if>
+			<if test="parentname != null">
+				parentname,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="articleid != null">
+				#{articleid,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				#{userid,jdbcType=INTEGER},
+			</if>
+			<if test="parentid != null">
+				#{parentid,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="text != null">
+				#{text,jdbcType=VARCHAR},
+			</if>
+			<if test="parentname != null">
+				#{parentname,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ssm.pojo.Comments">
+		update comments
+		<set>
+			<if test="articleid != null">
+				articleid = #{articleid,jdbcType=INTEGER},
+			</if>
+			<if test="userid != null">
+				userid = #{userid,jdbcType=INTEGER},
+			</if>
+			<if test="parentid != null">
+				parentid = #{parentid,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="text != null">
+				text = #{text,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ssm.pojo.Comments">
+		update comments
+		set articleid = #{articleid,jdbcType=INTEGER},
+		userid =
+		#{userid,jdbcType=INTEGER},
+		parentid = #{parentid,jdbcType=INTEGER},
+		ip
+		= #{ip,jdbcType=VARCHAR},
+		text = #{text,jdbcType=VARCHAR},
+		time =
+		#{time,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>
