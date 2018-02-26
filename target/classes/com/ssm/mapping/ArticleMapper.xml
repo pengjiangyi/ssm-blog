@@ -152,7 +152,7 @@
 		GROUP BY
 		articleid
 		) AC ON A.id = AC.articleid
-		LEFT JOIN tag t ON t.id = A.tagid and t.name=#{tagname}
+		LEFT JOIN tag t ON t.id = A.tagid where t.name=#{tagname}
 		ORDER BY
 		A.createtime DESC
 	</select>

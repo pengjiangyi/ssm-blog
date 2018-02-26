@@ -122,25 +122,7 @@
 				});
 
 			});
-			function getRootPath() {
-		// http://localhost:8083/uimcardprj/share/meun.jsp
-		var curWwwPath = window.document.location.href;
-		// uimcardprj/share/meun.jsp
-		var pathName = window.document.location.pathname;
-		var pos = curWwwPath.indexOf(pathName);
-		// http://localhost:8083
-		var localhostPaht = curWwwPath.substring(0, pos);
-		// uimcardprj
-		var projectName = pathName.substring(0,
-				pathName.substr(1).indexOf('/') + 1);
-		if (projectName == "/pc")
-			projectName = "";
-
-		return (localhostPaht + projectName);
-	}
-	var rootPath = getRootPath()
-			
-			
+			var rootPath = '${request.contextPath}'
 			
 			
 			

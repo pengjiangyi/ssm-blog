@@ -147,7 +147,7 @@
 							<ul class="list-group">
 								<li class="list-group-item">文章总数<span class="badge">${articleCount}</span></li>
 								<li class="list-group-item">评论总数<span class="badge">${commentsCount}</span></li>
-								<li class="list-group-item">IP总数<span class="badge">500</span></li>
+								<li class="list-group-item">IP总数<span class="badge">${ipCount}</span></li>
 								<li class="list-group-item">建站时间<span class="badge">2018-1-13</span></li>
 								<li class="list-group-item">用户人数<span class="badge">${userCount}</span></li>
 							</ul>
@@ -268,39 +268,4 @@
 <script>
 var base="${request.contextPath}";
 </script>
-<script>
-	$(".item").first().addClass("active");
-	$(".index").first().addClass("active");
-	
-	/*点击排行颜色js开始*/
-	var colors = ["red", "orange", "green", "blue", "cyan"];
-	var nums = ["1", "2", "3", "4", "5"];
-	$(".list-group-item em").each(function(index, dom) {
-		$(this).css("background-color", colors[index]);
-		$(this).text(nums[index])
-	})
-	$(function() {
-	$(".login").attr("href",base+"/login.html?from="+encodeURIComponent(location.href));
-	
-	
-	$("[data-toggle='tooltip']").tooltip(); 
-		//播放公告
-		playAnnouncement(3000);
-	});
-
-	function playAnnouncement(interval) {
-		var index = 0;
-		var $announcement = $('.home-tips-container>span');
-		//自动轮换
-		setInterval(function() {
-			index++; //下标更新
-			if(index >= $announcement.length) {
-				index = 0;
-			}
-			$announcement.eq(index).stop(true, true).fadeIn().siblings('span').fadeOut(); //下标对应的图片显示，同辈元素隐藏
-		}, interval);
-	}
-	
-	
-	
-</script>
+<script src="${request.contextPath}/resources/js/index.js"></script>

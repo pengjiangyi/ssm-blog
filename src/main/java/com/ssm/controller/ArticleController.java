@@ -171,6 +171,7 @@ public class ArticleController {
 		// 分页查询文章通过tagname
 		PageInfo<Article> article = articleservice.selectArticleByTag(pageNo, pageSize, tagname);
 		mv.addObject("article", article);
+		System.out.println(JSON.toJSONString(article));
 		mv.addObject("tagname", tagname);
 		// 查询标签
 

@@ -48,6 +48,10 @@
 	<select id="selectAll" resultMap="BaseResultMap">
 		select * from comments,user where comments.userid=user.id
 	</select>
+	
+	<select id="selectComments" resultType="java.lang.Integer">
+	select count(*) from comments 
+	</select>
 
 	<select id="conditionalQueryComments" parameterType="java.util.HashMap"
 		resultMap="BaseResultMap">
