@@ -58,9 +58,9 @@
 						<div class="article-footer">
 							<span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;${article.createtime?string("yyyy-MM-dd HH:mm:ss")}</span><span class="article-author" data-toggle="tooltip" title="作者">
 									<i class="fa fa-user"></i>&nbsp;&nbsp; ${article.author!}</span> <span data-toggle="tooltip" title="标签">
-									<i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="${request.contextPath}/query/tag/${article.tag.name}/1.html">${article.tag.name!} </a> </span>
+									<i class="fa fa-tag"></i>&nbsp;&nbsp;<a href="${request.contextPath}/query/tag/${article.tag.name!}/1.html">${article.tag.name!} </a> </span>
 							<span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;${article.readcount!}</span>
-							<span class="article-viewinfo"><i class="fa fa-commenting"></i>&nbsp;${article.count}</span>
+							<span class="article-viewinfo"><i class="fa fa-commenting"></i>&nbsp;${article.count!}</span>
 						</div>
 					</div>	
 					

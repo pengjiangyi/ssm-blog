@@ -1,6 +1,6 @@
-2018-02-25 15:54:26  [ main:0 ] - [ INFO ]  Loading XML bean definitions from class path resource [applicationContext.xml]
-2018-02-25 15:54:26  [ main:380 ] - [ INFO ]  Refreshing org.springframework.context.support.GenericApplicationContext@5649fd9b: startup date [Sun Feb 25 15:54:26 CST 2018]; root of context hierarchy
-2018-02-25 15:54:27  [ main:640 ] - [ INFO ]  Loading properties file from class path resource [jdbc.properties]
-2018-02-25 15:54:27  [ main:640 ] - [ INFO ]  Loading properties file from class path resource [redis.properties]
-2018-02-25 15:54:27  [ main:650 ] - [ INFO ]  JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
-2018-02-25 15:54:30  [ Thread-4:3655 ] - [ INFO ]  Closing org.springframework.context.support.GenericApplicationContext@5649fd9b: startup date [Sun Feb 25 15:54:26 CST 2018]; root of context hierarchy
+2018-02-27 11:20:40  [ main:0 ] - [ INFO ]  Loading XML bean definitions from class path resource [applicationContext.xml]
+2018-02-27 11:20:41  [ main:664 ] - [ INFO ]  Refreshing org.springframework.context.support.GenericApplicationContext@5649fd9b: startup date [Tue Feb 27 11:20:41 CST 2018]; root of context hierarchy
+2018-02-27 11:20:42  [ main:1173 ] - [ INFO ]  Loading properties file from class path resource [jdbc.properties]
+2018-02-27 11:20:42  [ main:1176 ] - [ INFO ]  Loading properties file from class path resource [redis.properties]
+2018-02-27 11:20:42  [ main:1192 ] - [ INFO ]  JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2018-02-27 11:20:46  [ Thread-4:5885 ] - [ INFO ]  Closing org.springframework.context.support.GenericApplicationContext@5649fd9b: startup date [Tue Feb 27 11:20:41 CST 2018]; root of context hierarchy
